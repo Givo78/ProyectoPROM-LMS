@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binted - Comprar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .product-item {
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+        .product-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Binted</h1>
+        <nav>
+            <ul>
+                <li><a href="main.html">Inicio</a></li>
+                <li><a href="comprar.html">Comprar</a></li>
+                <li><a href="vender.html">Vender</a></li>
+                <li><a href="login.html">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Galería de Productos</h2>
+        <div class="gallery" id="gallery">
+            <!-- Aquí se mostrarán los productos -->
+        </div>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const productos = JSON.parse(localStorage.getItem("productos")) || [];
+            const gallery = document.getElementById("gallery");
+            
+            productos.forEach((producto, index) => {
+                const item = document.createElement("div");
+                item.classList.add("product-item");
+                item.innerHTML = `
+                    <img src="${producto.imagen}" alt="${producto.nombre}" class="product-img">
+                    <p>${producto.nombre} - $${producto.precio}</p>
+                    <button onclick="comprarProducto(${index})">Comprar</button>
+                    <button onclick="eliminarProducto(${index})">Eliminar</button>
+                `;
+                gallery.appendChild(item);
+            });
+        });
+        
+        function comprarProducto(index) {
+            alert("Producto comprado con éxito.");
+        }
+
+        function eliminarProducto(index) {
+            let productos = JSON.parse(localStorage.getItem("productos")) || [];
+            productos.splice(index, 1);
+            localStorage.setItem("productos", JSON.stringify(productos));
+            location.reload();
+        }
+    </script>
+</body>
+</html>

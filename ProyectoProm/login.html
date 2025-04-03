@@ -8,35 +8,16 @@
 </head>
 <body>
     <div class="container">
-        <h1><img src="Captura de pantalla 2025-04-02 174521.png" alt="">Binted</h1>
+        <h1><img src="BINTED_LOGO.png" alt=""></h1>
         <h2>Iniciar Sesión</h2>
         <input type="text" id="username" placeholder="Usuario"><br><br>
         <input type="password" id="password" placeholder="Contraseña"><br><br>
+        <p>No estas registrado? <a href="register.html">Registrate aqui</a></p>
         <button onclick="checkLogin()">Entrar</button>
     </div>
     <script>
         function checkLogin() {
-            let username = document.getElementById("username").value;
-            let password = document.getElementById("password").value;
-    
-            fetch('login.php', { // Enviamos los datos al backend en PHP
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-            })
-            .then(response => response.json()) // Convertimos la respuesta a JSON
-            .then(data => {
-                if (data.status === "success") {
-                    if (data.role === "admin") {
-                        window.location.href = 'admin.html'; // Si es admin, va a admin.html
-                    } else {
-                        window.location.href = 'main.html'; // Si es usuario normal, va a main.html
-                    }
-                } else {
-                    alert(data.message); // Si hay un error, mostramos el mensaje
-                }
-            })
-            .catch(error => console.error('Error:', error));
+            window.location.href = 'main.html';
         }
     </script>
 </body>

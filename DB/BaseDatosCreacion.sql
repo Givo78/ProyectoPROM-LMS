@@ -51,6 +51,7 @@ INSERT INTO usuarios (nombre, correo, contrasena, rol) VALUES
 ('Juan Pérez', 'juan@example.com', 'contraseñaEncriptada1', 'usuario'),
 ('Admin', 'admin@example.com', 'contraseñaEncriptadaAdmin', 'administrador');
 
+-- prueba
 -- Insertar productos de ejemplo con URLs de imágenes
 INSERT INTO productos (titulo, descripcion, precio, fotos, localidad, id_usuario) VALUES
 ('iPhone 12', 'Smartphone de última generación', 800.00, 'https://images.unsplash.com/photo-1604679639369-58b1026f8ed5', 'Madrid', 1),

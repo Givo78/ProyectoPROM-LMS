@@ -1,11 +1,11 @@
 -- Eliminar la base de datos si existe
-DROP DATABASE IF EXISTS wallapop_simulado;
+DROP DATABASE IF EXISTS Binteddb;
 
 -- Crear la base de datos
-CREATE DATABASE wallapop_simulado;
+CREATE DATABASE Binteddb;
 
 -- Usar la base de datos recién creada
-USE wallapop_simulado;
+USE Binteddb;
 
 -- Eliminar tablas si existen
 DROP TABLE IF EXISTS usuarios;
@@ -18,7 +18,7 @@ CREATE TABLE usuarios (
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
-    rol ENUM('usuario', 'administrador') NOT NULL,
+    rol ENUM('usuario', 'administrador') NOT NULL DEFAULT 'usuario',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

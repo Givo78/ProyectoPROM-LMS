@@ -15,9 +15,9 @@ DROP TABLE IF EXISTS contactos;
 -- Crear tabla de usuarios
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    correo VARCHAR(100) UNIQUE NOT NULL,
-    contrasena VARCHAR(255) NOT NULL,
+    usuario VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     rol ENUM('usuario', 'administrador') NOT NULL DEFAULT 'usuario',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -35,7 +35,7 @@ CREATE TABLE productos (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
 );
 
--- Crear tabla de contactos (opcional)
+-- Crear tabla de contactos
 CREATE TABLE contactos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_producto INT NOT NULL,
@@ -47,13 +47,13 @@ CREATE TABLE contactos (
 );
 
 -- Insertar datos de ejemplo en la tabla usuarios
-INSERT INTO usuarios (nombre, correo, contrasena, rol) VALUES
+INSERT INTO usuarios (usuario, email, password, rol) VALUES
 ('Juan Pérez', 'juan@example.com', 'contraseñaEncriptada1', 'usuario'),
 ('Admin', 'admin@example.com', 'contraseñaEncriptadaAdmin', 'administrador');
 
 -- prueba
 -- Insertar productos de ejemplo con URLs de imágenes
 INSERT INTO productos (titulo, descripcion, precio, fotos, localidad, id_usuario) VALUES
-('iPhone 12', 'Smartphone de última generación', 800.00, 'https://images.unsplash.com/photo-1604679639369-58b1026f8ed5', 'Madrid', 1),
-('Coche Toyota Corolla', 'Vehículo usado en buen estado', 12000.00, 'https://images.pexels.com/photos/1687465/pexels-photo-1687465.jpeg', 'Madrid', 1),
-('Bicicleta de montaña', 'Bicicleta ideal para senderismo', 500.00, 'https://cdn.pixabay.com/photo/2017/07/26/22/06/bicycle-2547427_960_720.jpg', 'Barcelona', 1);
+('iPhone 12', 'Smartphone de última generación', 800.00, 'https://i.imgur.com/MmIJCH7.png', 'Madrid', 1),
+('Coche Toyota Corolla', 'Vehículo usado en buen estado', 12000.00, 'https://i.imgur.com/GrIwHxK.png', 'Madrid', 1),
+('Bicicleta de montaña', 'Bicicleta ideal para senderismo', 500.00, 'https://i.imgur.com/vE4Q4SU.png', 'Barcelona', 1);

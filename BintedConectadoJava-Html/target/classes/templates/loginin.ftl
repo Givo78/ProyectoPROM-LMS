@@ -109,7 +109,7 @@
         </a>
         <h1>Iniciar Sesión</h1>
         <!-- Formulario de login -->
-        <form action="/login" method="post">
+        <form action="/loginin" method="post">
             <label for="usuario">Usuario:</label>
             <input type="text" id="usuario" name="usuario" required><br><br>
 

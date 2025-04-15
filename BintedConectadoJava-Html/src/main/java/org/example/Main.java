@@ -13,6 +13,7 @@ public class Main {
         // Configuración de Freemarker
         Configuration freemarkerConfig = new Configuration(Configuration.VERSION_2_3_31);
         freemarkerConfig.setClassForTemplateLoading(Main.class, "/templates");
+        freemarkerConfig.setDefaultEncoding("UTF-8");
 
         // Iniciar Javalin
         Javalin app = Javalin.create(config -> {
@@ -24,7 +25,7 @@ public class Main {
         String username = "root";
         String password2 = "root";
 
-        // Prueba de conexión
+        // Probar conexión inicial
         try (Connection conn = DriverManager.getConnection(url, username, password2)) {
             System.out.println("Conexión a la base de datos exitosa.");
         } catch (SQLException e) {
@@ -32,7 +33,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Página inicial (registro)
+        // Página inicial (formulario de registro)
         app.get("/", ctx -> ctx.render("login.ftl"));
 
         // Registro de usuarios
@@ -41,6 +42,13 @@ public class Main {
             String usuario = ctx.formParam("usuario");
             String email = ctx.formParam("email");
             String password = ctx.formParam("password");
+
+            if (usuario == null || email == null || password == null ||
+                    usuario.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                model.put("error", "Todos los campos son obligatorios.");
+                ctx.render("login.ftl", model);
+                return;
+            }
 
             try (Connection conn = DriverManager.getConnection(url, username, password2)) {
                 String query = "INSERT INTO usuarios (usuario, email, password) VALUES (?, ?, ?)";
@@ -51,6 +59,7 @@ public class Main {
                     stmt.executeUpdate();
                 }
                 model.put("mensaje", "Registro exitoso. ¡Ahora puedes iniciar sesión!");
+                model.put("usuario", usuario);
                 ctx.render("respuesta.ftl", model);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -59,14 +68,20 @@ public class Main {
             }
         });
 
-        // Formulario de login
+        // Página de login
         app.get("/loginin", ctx -> ctx.render("loginin.ftl"));
 
-        // Inicio de sesión
+        // Procesar login
         app.post("/loginin", ctx -> {
             String usuario = ctx.formParam("usuario");
             String password = ctx.formParam("password");
             Map<String, Object> model = new HashMap<>();
+
+            if (usuario == null || password == null || usuario.isEmpty() || password.isEmpty()) {
+                model.put("error", "Por favor, rellena todos los campos.");
+                ctx.render("loginin.ftl", model);
+                return;
+            }
 
             try (Connection conn = DriverManager.getConnection(url, username, password2)) {
                 String query = "SELECT * FROM usuarios WHERE usuario = ? AND password = ?";
@@ -94,8 +109,9 @@ public class Main {
         app.get("/home", ctx -> {
             Map<String, Object> model = new HashMap<>();
             String usuario = ctx.sessionAttribute("usuario");
-            model.put("currentIndex", 0);
+
             model.put("usuario", usuario != null ? usuario : "Invitado");
+            model.put("currentIndex", 0);
             ctx.render("home.ftl", model);
         });
     }

@@ -94,3 +94,27 @@ img{
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    min-height: calc(100vh - 100px); /* Altura total menos la del footer */
+    padding: 20px;
+}
+
+footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    height: 100px;
+}
+
+footer a {
+    color: #aaa;
+    text-decoration: none;
+    margin: 0 10px;
+}

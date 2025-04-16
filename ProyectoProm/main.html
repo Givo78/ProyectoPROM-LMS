@@ -6,38 +6,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Binted - Inicio</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .slider-search-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+.slider-container {
+    flex: 2;
+    position: relative;
+    overflow: hidden;
+    max-width: 70vw;
+}
+
+.search-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.search-container h2 {
+    margin-bottom: 10px;
+}
+
+#search-bar {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+    </style>
 </head>
 <body>
-    <header>
-        <h1><img src="BINTED_LOGO.png" alt=""></h1>
-        <nav>
-            <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="comprar.html">Comprar</a></li>
-                <li><a href="vender.html">Vender</a></li>
-                <li><a href="login.html">Cerrar Sesión</a></li>
-            </ul>
-        </nav>
-    </header>
+    
     <main>
-        <div class="content">
-            <div class="slider-container">
-                <div class="slider">
-                    <div class="slide" style="background-image: url('back-view-female-tailor-checking-garments.jpg');"></div>
-                    <div class="slide" style="background-image: url('side-view-female-tailor-checking-garments.jpg');"></div>
-                    <div class="slide" style="background-image: url('side-view-woman-looking-clothes.jpg');"></div>
-                </div>
-                <div class="nav-buttons">
-                    <button onclick="prevSlide()">&#10094;</button>
-                    <button onclick="nextSlide()">&#10095;</button>
-                </div>
-                <div class="search-container">
-                    <h2>¿Qué estás buscando?</h2>
-                    <input type="text" id="search-bar" placeholder="Buscar...">
+        <header>
+            <h1><img src="BINTED_LOGO.png" alt=""></h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="comprar.html">Comprar</a></li>
+                    <li><a href="vender.html">Vender</a></li>
+                    <li><a href="login.html">Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="wrapper">
+            <div class="content">
+                <div class="slider-search-wrapper">
+                    <!-- Slider -->
+                    <div class="slider-container">
+                        <div class="slider">
+                            <div class="slide" style="background-image: url('back-view-female-tailor-checking-garments.jpg');"></div>
+                            <div class="slide" style="background-image: url('side-view-female-tailor-checking-garments.jpg');"></div>
+                            <div class="slide" style="background-image: url('side-view-woman-looking-clothes.jpg');"></div>
+                        </div>
+                        <div class="nav-buttons">
+                            <button onclick="prevSlide()">&#10094;</button>
+                            <button onclick="nextSlide()">&#10095;</button>
+                        </div>
+                    </div>
+        
+                    <!-- Buscador -->
+                    <div class="search-container">
+                        <h2>¿Qué estás buscando?</h2>
+                        <input type="text" id="search-bar" placeholder="Buscar...">
+                    </div>
                 </div>
             </div>
-            
         </div>
+    
+        <footer>
+            <p>&copy; 2025 Binted. Todos los derechos reservados.</p>
+            <p>
+                <a href="privacidad.html">Política de Privacidad</a> |
+                <a href="terminos.html">Términos y Condiciones</a> |
+                <a href="contacto.html">Contacto</a>
+            </p>
+        </footer>
         <script>
             let currentIndex = 0;
             function showSlide(index) {
@@ -50,6 +100,15 @@
             function nextSlide() { showSlide(currentIndex + 1); }
             function prevSlide() { showSlide(currentIndex - 1); }
             setInterval(nextSlide, 5000);
+
+            const searchBar = document.getElementById("search-bar");
+            searchBar.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            const query = searchBar.value.trim();
+            localStorage.setItem("busqueda", query);
+            window.location.href = "comprar.html";
+            }
+        });
         </script>
     </main>
 </body>

@@ -50,7 +50,33 @@ public class Main {
                 return;
             }
 
+            // Verificar si el usuario o el email ya existen
             try (Connection conn = DriverManager.getConnection(url, username, password2)) {
+                // Verificar si el nombre de usuario ya existe
+                String checkUserQuery = "SELECT * FROM usuarios WHERE usuario = ?";
+                try (PreparedStatement checkUserStmt = conn.prepareStatement(checkUserQuery)) {
+                    checkUserStmt.setString(1, usuario);
+                    ResultSet userResultSet = checkUserStmt.executeQuery();
+                    if (userResultSet.next()) {
+                        model.put("error", "El nombre de usuario ya está en uso.");
+                        ctx.render("login.ftl", model);
+                        return;
+                    }
+                }
+
+                // Verificar si el email ya existe
+                String checkEmailQuery = "SELECT * FROM usuarios WHERE email = ?";
+                try (PreparedStatement checkEmailStmt = conn.prepareStatement(checkEmailQuery)) {
+                    checkEmailStmt.setString(1, email);
+                    ResultSet emailResultSet = checkEmailStmt.executeQuery();
+                    if (emailResultSet.next()) {
+                        model.put("error", "El email ya está registrado.");
+                        ctx.render("login.ftl", model);
+                        return;
+                    }
+                }
+
+                // Si no existe, proceder con el registro
                 String query = "INSERT INTO usuarios (usuario, email, password) VALUES (?, ?, ?)";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, usuario);
@@ -58,9 +84,10 @@ public class Main {
                     stmt.setString(3, password);
                     stmt.executeUpdate();
                 }
-                model.put("mensaje", "Registro exitoso. ¡Ahora puedes iniciar sesión!");
-                model.put("usuario", usuario);
-                ctx.render("respuesta.ftl", model);
+
+                model.put("mensaje", "Has registrado correctamente, " + usuario);
+                // Redirigir a loginin.ftl con el mensaje de éxito
+                ctx.render("loginin.ftl", model);
             } catch (SQLException e) {
                 e.printStackTrace();
                 model.put("error", "Error al registrar usuario: " + e.getMessage());

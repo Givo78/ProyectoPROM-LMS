@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Binted - Inicio</title>
     <style>
-        /* Estilos generales */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -42,7 +41,7 @@
         }
         .saludo {
             font-weight: bold;
-            position: absolute;
+            position: cener;
             top: 10px;
             right: 20px;
         }

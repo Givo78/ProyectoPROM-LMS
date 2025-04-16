@@ -100,15 +100,29 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-    </style>
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Logo de la empresa -->
+<div class="container">
         <a href="https://postimages.org/" target="_blank">
             <img src="https://i.postimg.cc/JhzjqqD5/BINTED-LOGO.png" border="0" alt="BINTED-LOGO"/>
         </a>
         <h1>Bienvenido</h1>
+
+        <!-- Mostrar mensaje de éxito -->
+        <#if mensaje?exists>
+            <div style="color: green; font-weight: bold;">
+                ${mensaje}
+            </div>
+        </#if>
+
+        <!-- Mostrar mensaje de error -->
+        <#if error?exists>
+            <div style="color: red; font-weight: bold;">
+                ${error}
+            </div>
+        </#if>
+
         <!-- Formulario de registro -->
         <form action="/submit" method="post">
             <label for="usuario">Usuario:</label>
@@ -124,10 +138,5 @@
         </form>
         <p>¿Ya tienes cuenta? <a href="/loginin">Accede aquí</a></p>
     </div>
-    <script>
-        function checkLogin() {
-            window.location.href = 'main.html';
-        }
-    </script>
 </body>
 </html>

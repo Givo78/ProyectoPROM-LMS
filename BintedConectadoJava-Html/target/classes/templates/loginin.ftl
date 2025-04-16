@@ -103,9 +103,7 @@
 </head>
 <body>
 <div class="container">
-        <a href="https://postimages.org/" target="_blank">
             <img src="https://i.postimg.cc/JhzjqqD5/BINTED-LOGO.png" border="0" alt="BINTED-LOGO"/>
-        </a>
         <h1>Iniciar Sesión</h1>
 
         <!-- Mostrar mensaje de éxito -->
@@ -114,6 +112,14 @@
                 ${mensaje}
             </div>
         </#if>
+
+        <!-- Mostrar mensaje de error -->
+        <#if error?exists>
+            <div style="color: red; font-weight: bold;">
+                ${error}
+            </div>
+        </#if>
+
 
         <!-- Formulario de login -->
         <form action="/loginin" method="post">

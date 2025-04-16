@@ -104,9 +104,7 @@
 </head>
 <body>
 <div class="container">
-        <a href="https://postimages.org/" target="_blank">
             <img src="https://i.postimg.cc/JhzjqqD5/BINTED-LOGO.png" border="0" alt="BINTED-LOGO"/>
-        </a>
         <h1>Bienvenido</h1>
 
         <!-- Mostrar mensaje de éxito -->

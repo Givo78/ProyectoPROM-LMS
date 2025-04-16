@@ -18,6 +18,11 @@ public class Main {
         // Iniciar Javalin
         Javalin app = Javalin.create(config -> {
             config.fileRenderer(new JavalinFreemarker(freemarkerConfig));
+            config.staticFiles.add(staticFileConfig -> {
+                staticFileConfig.hostedPath = "/";
+                staticFileConfig.directory = "public";
+                staticFileConfig.location = io.javalin.http.staticfiles.Location.CLASSPATH;
+            });
         }).start(8080);
 
         // Datos de conexión a la base de datos

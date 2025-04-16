@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binted - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1><img src="BINTED_LOGO.png" alt=""></h1>
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario"><br><br>
+        <input type="password" id="password" placeholder="Contraseña"><br><br>
+        <a href="register.html">Registrarse</a>
+        <button onclick="checkLogin()">Inciar Sesion</button>
+    </div>
+    <script>
+        function checkLogin() {
+            window.location.href = 'main.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+@startuml
+class Trabajador{
+- int id
+- String nombre
+- int sueldo
+- String contrato
+- String departamento
++ Trabajador(int, String, int, String, String)
++ int getId()
++ String getNombre()
++ int getSueldo()
++ String getContrato()
++ String getSueldo()
+}
+@enduml

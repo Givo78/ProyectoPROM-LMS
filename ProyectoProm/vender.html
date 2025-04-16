@@ -22,13 +22,22 @@
         </header>
         <main>
             <h2>Vender un Producto</h2>
-            <form id="sellForm">
-                <input type="text" id="nombre" placeholder="Nombre del producto" required><br><br>
-                <input type="number" id="precio" placeholder="Precio" required><br><br>
+            <form id="sellForm" class="formulario">
+                <input type="text" id="titulo" placeholder="Título del producto" required><br><br>
+                
+                <textarea id="descripcion" placeholder="Descripción del producto" required></textarea><br><br>
+                
+                <input type="number" id="precio" placeholder="Precio (€)" step="0.01" required><br><br>
+                
                 <input type="file" id="imagen" accept="image/*" required><br><br>
+                
+                <input type="text" id="localidad" placeholder="Localidad" required><br><br>
+        
                 <button type="submit">Subir Producto</button>
             </form>
-        </main>    </div>
+        </main>
+        
+           </div>
 
     <footer>
         <p>&copy; 2025 Binted. Todos los derechos reservados.</p>
@@ -41,22 +50,40 @@
     <script>
         document.getElementById("sellForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            
-            const nombre = document.getElementById("nombre").value;
+    
+            const titulo = document.getElementById("titulo").value;
+            const descripcion = document.getElementById("descripcion").value;
             const precio = document.getElementById("precio").value;
+            const localidad = document.getElementById("localidad").value;
             const imagen = document.getElementById("imagen").files[0];
-            
+    
             if (imagen) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const productos = JSON.parse(localStorage.getItem("productos")) || [];
-                    productos.push({ nombre, precio, imagen: e.target.result });
+    
+                    const nuevoProducto = {
+                        titulo,
+                        descripcion,
+                        precio,
+                        localidad,
+                        imagen: e.target.result,
+                        // id_usuario e id serían manejados en el servidor
+                        fecha_subida: new Date().toISOString()
+                    };
+    
+                    productos.push(nuevoProducto);
                     localStorage.setItem("productos", JSON.stringify(productos));
+    
                     alert("Producto subido con éxito");
+    
+                    // Limpiar formulario
+                    document.getElementById("sellForm").reset();
                 };
                 reader.readAsDataURL(imagen);
             }
         });
     </script>
+    
 </body>
 </html>

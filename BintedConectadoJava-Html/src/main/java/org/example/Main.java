@@ -30,6 +30,37 @@ public class Main {
         String username = "root";
         String password2 = "root";
 
+        // Crear base de datos y tabla si no existen
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=" + username + "&password=" + password2)) {
+            Statement stmt = conn.createStatement();
+            // Crear base de datos si no existe
+            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS Binteddb");
+            // Usar la base de datos
+            stmt.executeUpdate("USE Binteddb");
+            // Crear tabla usuarios si no existe
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS usuarios (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "usuario VARCHAR(255) UNIQUE NOT NULL," +
+                    "email VARCHAR(255) UNIQUE NOT NULL," +
+                    "password VARCHAR(255) NOT NULL" +
+                    ")");
+            // Crear tabla productos si no existe
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS productos (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "titulo VARCHAR(255) NOT NULL," +
+                    "descripcion TEXT NOT NULL," +
+                    "precio DECIMAL(10,2) NOT NULL," +
+                    "localidad VARCHAR(255) NOT NULL," +
+                    "imagen LONGTEXT NOT NULL," +
+                    "fecha_subida DATETIME NOT NULL" +
+                    ")");
+
+            System.out.println("Base de datos y tabla verificadas/creadas exitosamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al crear la base de datos o la tabla.");
+            e.printStackTrace();
+        }
+
         // Probar conexión inicial
         try (Connection conn = DriverManager.getConnection(url, username, password2)) {
             System.out.println("Conexión a la base de datos exitosa.");
@@ -134,6 +165,42 @@ public class Main {
                 e.printStackTrace();
                 model.put("error", "Error al acceder a la base de datos");
                 ctx.render("loginin.ftl", model);
+            }
+        });
+
+
+        // Guardar producto en la base de datos
+        app.post("/subirProducto", ctx -> {
+            // Parsear el JSON recibido
+            Map<String, Object> producto = ctx.bodyAsClass(Map.class);
+
+            String titulo = (String) producto.get("titulo");
+            String descripcion = (String) producto.get("descripcion");
+            String precioStr = producto.get("precio").toString();
+            String localidad = (String) producto.get("localidad");
+            String imagenBase64 = (String) producto.get("imagen");
+            String fechaSubida = (String) producto.get("fecha_subida");
+
+            try (Connection conn = DriverManager.getConnection(url, username, password2)) {
+                String query = "INSERT INTO productos (titulo, descripcion, precio, localidad, imagen, fecha_subida) VALUES (?, ?, ?, ?, ?, ?)";
+
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setString(1, titulo);
+                    stmt.setString(2, descripcion);
+                    stmt.setBigDecimal(3, new java.math.BigDecimal(precioStr));
+                    stmt.setString(4, localidad);
+                    stmt.setString(5, imagenBase64);
+                    stmt.setTimestamp(6, Timestamp.valueOf(fechaSubida.replace("T", " ").substring(0, 19)));
+
+                    stmt.executeUpdate();
+                }
+
+                ctx.status(200);
+                ctx.result("Producto guardado exitosamente");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ctx.status(500);
+                ctx.result("Error al guardar el producto en la base de datos: " + e.getMessage());
             }
         });
 

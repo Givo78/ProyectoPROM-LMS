@@ -213,5 +213,14 @@ public class Main {
             model.put("currentIndex", 0);
             ctx.render("home.ftl", model);
         });
+
+        // RSS Feed de productos recientes
+        app.get("/rss", ctx -> {
+            String rssContent = RssFeedGenerator.generateRssFeed();
+            ctx.contentType("application/rss+xml");
+            ctx.result(rssContent);
+        });
+
+
     }
 }

@@ -2,12 +2,12 @@ package org.example;
 
 import com.rometools.rome.feed.synd.*;
 import com.rometools.rome.io.SyndFeedOutput;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
 
 public class RssFeedGenerator {
-    // Configuración consistente con tu aplicación
     private static final String DB_URL = "jdbc:mysql://localhost:3306/Binteddb";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "root";
@@ -43,7 +43,6 @@ public class RssFeedGenerator {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                // Usar SyndEntryImpl en lugar de la interfaz SyndEntry
                 SyndEntryImpl entry = new SyndEntryImpl();
                 entry.setTitle(String.format("%s - %.2f€ (%s)",
                         rs.getString("titulo"),
@@ -53,7 +52,6 @@ public class RssFeedGenerator {
                 entry.setLink(SITE_BASE_URL + "/producto?id=" + rs.getInt("id"));
                 entry.setPublishedDate(rs.getTimestamp("fecha_subida"));
 
-                // Configurar la descripción
                 SyndContent description = new SyndContentImpl();
                 description.setType("text/html");
                 description.setValue(buildDescriptionHtml(rs));
@@ -73,13 +71,9 @@ public class RssFeedGenerator {
         String imagen = rs.getString("imagen");
 
         if (imagen != null && !imagen.isEmpty()) {
-            html.append("<div style='margin-bottom:15px;'>");
-            if (imagen.startsWith("data:image")) {
-                html.append("<img src=\"").append(imagen).append("\" style=\"max-width:100%;height:auto;\"/>");
-            } else {
-                html.append("<img src=\"").append(imagen).append("\" style=\"max-width:100%;height:auto;\"/>");
-            }
-            html.append("</div>");
+            html.append("<div style='margin-bottom:15px;'>")
+                    .append("<img src=\"").append(imagen).append("\" style=\"max-width:100%;height:auto;\"/>")
+                    .append("</div>");
         }
 
         html.append("<div style='margin-bottom:10px;'>")

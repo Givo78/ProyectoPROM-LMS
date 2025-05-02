@@ -5,8 +5,13 @@ import io.javalin.rendering.template.JavalinFreemarker;
 import freemarker.template.Configuration;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.sql.Timestamp;
 
 public class Main {
     public static void main(String[] args) {
@@ -219,6 +224,133 @@ public class Main {
             String rssContent = RssFeedGenerator.generateRssFeed();
             ctx.contentType("application/rss+xml");
             ctx.result(rssContent);
+        });
+
+
+        // comprar con handler de errores
+        // comprar con handler de errores
+        app.get("/comprar", ctx -> {
+            Map<String, Object> model = new HashMap<>(); // Declarar 'model' aquí
+
+            try {
+                // Obtener el nombre del usuario desde la sesión
+                String usuario = ctx.sessionAttribute("usuario");
+                model.put("usuario", usuario);
+
+                // Obtener productos desde la base de datos
+                try (Connection conn = DriverManager.getConnection(url, username, password2)) {
+                    // ¡Aquí está la corrección! Selecciona la columna 'id'
+                    String query = "SELECT id, titulo, descripcion, precio, fotos, localidad, fecha_subida FROM productos ORDER BY fecha_subida DESC";
+                    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                        ResultSet rs = stmt.executeQuery();
+                        List<Map<String, Object>> productos = new ArrayList<>();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM y, H:mm:ss");
+                        while (rs.next()) {
+                            Map<String, Object> producto = new HashMap<>();
+                            // ¡Aquí está la corrección! Obtén el 'id' del ResultSet
+                            producto.put("id", rs.getInt("id"));
+                            producto.put("titulo", rs.getString("titulo"));
+                            producto.put("descripcion", rs.getString("descripcion"));
+                            producto.put("precio", rs.getBigDecimal("precio"));
+                            producto.put("imagen", rs.getString("fotos"));
+                            producto.put("localidad", rs.getString("localidad"));
+                            Timestamp timestamp = rs.getTimestamp("fecha_subida");
+                            if (timestamp != null) {
+                                LocalDateTime dateTime = timestamp.toLocalDateTime();
+                                producto.put("fecha_subida", dateTime.format(formatter));
+                            } else {
+                                producto.put("fecha_subida", "");
+                            }
+                            productos.add(producto);
+                        }
+                        model.put("productos", productos);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    model.put("error", "Error al obtener productos: " + e.getMessage());
+                }
+
+                // Renderizar la plantilla con los productos
+                ctx.render("comprar.ftl", model);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.result("Error al cargar la página comprar: " + e.getMessage());
+            }
+        });
+
+        // Obtener un producto por índice
+        app.get("/producto/{index}", ctx -> {
+
+            int index = Integer.parseInt(ctx.pathParam("index"));
+            try (Connection conn = DriverManager.getConnection(url, username, password2)) {
+                String query = "SELECT * FROM productos ORDER BY fecha_subida DESC LIMIT 1 OFFSET ?";
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setInt(1, index);
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        Map<String, Object> producto = new HashMap<>();
+                        producto.put("titulo", rs.getString("titulo"));
+                        producto.put("descripcion", rs.getString("descripcion"));
+                        producto.put("precio", rs.getBigDecimal("precio"));
+                        producto.put("localidad", rs.getString("localidad"));
+                        producto.put("imagen", rs.getString("imagen"));
+                        producto.put("fecha_subida", rs.getTimestamp("fecha_subida").toString());
+                        ctx.json(producto);
+                    } else {
+                        ctx.status(404).result("Producto no encontrado");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ctx.status(500).result("Error en la base de datos");
+            }
+        });
+
+        // Contar la cantidad total de productos
+        app.get("/producto/count", ctx -> {
+
+
+
+            try (Connection conn = DriverManager.getConnection(url, username, password2)) {
+                String query = "SELECT COUNT(*) AS total FROM productos";
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        ctx.result(String.valueOf(rs.getInt("total")));
+                    } else {
+                        ctx.result("0");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ctx.status(500).result("Error al contar productos");
+            }
+        });
+
+        // Ruta para eliminar un producto
+        app.delete("/eliminarProducto/{id}", ctx -> {
+            String idStr = ctx.pathParam("id");
+            try {
+                int id = Integer.parseInt(idStr);
+                try (Connection conn = DriverManager.getConnection(url, username, password2)) {
+                    String query = "DELETE FROM productos WHERE id = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                        stmt.setInt(1, id);
+                        int rowsAffected = stmt.executeUpdate();
+                        if (rowsAffected > 0) {
+                            ctx.status(200).result("Producto eliminado exitosamente.");
+                        } else {
+                            ctx.status(404).result("Producto no encontrado.");
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    ctx.status(500).result("Error al eliminar el producto de la base de datos: " + e.getMessage());
+                }
+            } catch (NumberFormatException e) {
+                ctx.status(400).result("ID de producto inválido.");
+            }
         });
 
 
